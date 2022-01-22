@@ -1,4 +1,7 @@
-@put
+#User logged in as "APIPROCESSING" with "Basic Auth"
+#JSON schema validation is done in the When before the put request and in Then of the response body.
+#DB Validation is done for the updated user.
+@user
 Feature: Put user feature
 
 @check

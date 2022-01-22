@@ -1,4 +1,5 @@
-#@check
+#User logged in as "APIPROCESSING" with "Basic Auth"
+@skill
 Feature: Delete Skill Feature 
 
 Scenario: User wants to delete with existing skill id

@@ -14,7 +14,7 @@ import io.cucumber.junit.CucumberOptions;
 					 glue = {"com/lms/api/stepdef/user", "com/lms/api/stepdef/skillmap", "com/lms/api/stepdef/skills"},
 					// tags = "@blank",
 //@CucumberOptions(features = "src/test/resources/FeatureFiles/UserSkillMapGetStepDef.feature", glue = {"com/lms/api/stepdef/skillmap/"},
-monochrome=false,
+monochrome=true,
 dryRun = false,
 plugin = {"pretty","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
 
