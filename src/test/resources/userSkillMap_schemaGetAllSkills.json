@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": [
+    {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "skillmap": {
+          "type": "object",
+          "properties": {
+            "id:": {
+              "type": "string"
+            },
+            "skill:": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id:",
+            "skill:"
+          ]
+        }
+      },
+      "required": [
+        "userId",
+        "firstName",
+        "lastName",
+        "skillmap"
+      ]
+    }
+    
+  ]
+}

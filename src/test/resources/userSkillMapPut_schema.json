@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "user_skill_id": {
+      "type": "string"
+    },
+    "skill_id": {
+      "type": "integer"
+    },
+    "months_of_exp": {
+      "type": "integer"
+    },
+    "user_id": {
+      "type": "string"
+    },
+    "message": {
+      "type": "object",
+      "properties": {
+        "US12": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "US12"
+      ]
+    }
+  },
+  "required": [
+    "user_skill_id",
+    "skill_id",
+    "months_of_exp",
+    "user_id",
+    "message"
+  ]
+}
