@@ -58,7 +58,7 @@ public class UserSkillMapPutStepDef {
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(bodyExcel).log().all();
-
+		assertThat("Schema Validation Failed",bodyExcel, matchesJsonSchemaInClasspath("userSkillMap_schema.json"));
 		response = RequestSpec.when().put(path + UserSkillsId);
 
 	}
@@ -96,7 +96,7 @@ public class UserSkillMapPutStepDef {
 		System.out.println("Response Body is =>  " + responseBody);
 
 		// Put Schema Validation
-		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMap_schema.json"));
+		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMapPutResponse_schema.json"));
 		System.out.println("Validated the response body schema");
 
 		// Status code validation
@@ -149,7 +149,7 @@ public class UserSkillMapPutStepDef {
 		System.out.println("Response Body is =>  " + responseBody);
 
 		// Put Schema Validation
-		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMap_schema.json"));
+		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMapPutResponse_schema.json"));
 		System.out.println("Validated the response body schema");
 
 		// Status code validation

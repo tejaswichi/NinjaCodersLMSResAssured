@@ -15,17 +15,9 @@
       "type": "string"
     },
     "message": {
-      "type": "object",
-      "properties": {
-        "US12": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "US12"
-      ]
+      "type": "object"
     }
-  },
+   },
   "required": [
     "user_skill_id",
     "skill_id",
