@@ -5,8 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
+import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
@@ -17,7 +19,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.http.Method;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -27,7 +31,7 @@ public class UserSkillMapGetStepDef {
 	Response response;
 	String path;
 	String sheetGet;
-
+	static String validId;
 	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 
@@ -38,6 +42,8 @@ public class UserSkillMapGetStepDef {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
 		dbmanager = new Dbmanager();
+		
+		
 	}
 
 	// Scenario class will give us information at the runtime like the scenario
@@ -48,14 +54,18 @@ public class UserSkillMapGetStepDef {
 		sheetGet = properties.getProperty("sheetGet");
 		excelSheetReaderUtil = new ExcelReaderUtil(properties.getProperty("skillmap.excel.path"));
 		excelSheetReaderUtil.readSheet(sheetGet);
-
+		
 	}
 	
 	public void requestSpecificationGET() throws IOException {
 
-		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
-		requestSpec.log().all();
-		response = requestSpec.when().get(path + UserSkillsId);
+		//String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
+		//requestSpec.log().all();
+		//response = requestSpec.when().get(path);
+		requestSpec.header("Content-Type", "application/json");
+		requestSpec.log();
+		response = requestSpec.when().get(path);
+		
 	}
 
 	@Given("User is on GETall Method")
@@ -66,26 +76,30 @@ public class UserSkillMapGetStepDef {
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		path = properties.getProperty("skillmap.endpoint.getAll");
+		
 
 	}
 
 	@When("User sends request from UserSkillMap API")
 	public void user_sends_request_from_UserSkillMap_API() {
-		response = requestSpec.request(Method.GET, path);
+		requestSpec.header("Accept", ContentType.JSON.getAcceptHeader()).contentType(ContentType.JSON);
+		requestSpec.log().all();
+		response = requestSpec.when().get(path);
+	
 	}
 
 	@Then("User receives status code with valid json schemaforall")
 	public void user_receives_status_code_with_valid_json_schemaforall() throws IOException {
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
-		//int statuscode = response.statusCode();
+		
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMap_schemaAll.json"));
 		System.out.println("Validated the schema");
 		
 		System.out.println("Expected response code: " + expStatusCode);
 		System.out.println("Response Body is =>  " + responseBody);
-		
+
 
 	}
 
@@ -94,33 +108,52 @@ public class UserSkillMapGetStepDef {
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
-		path = properties.getProperty("skillmap.endpoint.get");
-
+		String userSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
+		path = properties.getProperty("skillmap.endpoint.get")+userSkillsId;
+				
 	}
 
 	@When("User sends request with Valid id")
 	public void user_sends_request_with_valid_id() throws IOException {
 		requestSpecificationGET();
+		
 	}
 
 	@Then("User receives status code with valid json schemas")
-	public void user_receives_status_code_with_valid_json_schemas() throws IOException {
+	public void user_receives_status_code_with_valid_json_schemas() throws IOException, Exception {
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		
-		//int statuscode = response.statusCode();
+		
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMap_schema.json"));
 		System.out.println("Validated the schema");
 		
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is =>  " + responseBody);
+		
+		String userSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(),"UserSkills");
+		validId = userSkillsId;
+		System.out.println("UserId from excel : " + validId);
+		
+		JsonPath js = response.jsonPath();
+		String rsUser_id = js.get("user_skill_id");
+		
+		// Retrieve a particular user record from tbl_lms_user
+		ArrayList<String> dbValidList = dbmanager.dbvalidationUserSkillMap(rsUser_id);
+		//String record = dbValidList.toString();
+		String dbUserSkillsId = dbValidList.get(0);
 
+		// DB validation for a get request for an existing user_id
+		assertEquals(validId, dbUserSkillsId);
+		ExtentCucumberAdapter.addTestStepLog("Get specific user " +	dbUserSkillsId 
+				+ " record from DB : "+ dbValidList.toString());
 	}
 
 	@When("User sends request with Invalid id")
 	public void user_sends_request_with_invalid_id() throws IOException {
 		requestSpecificationGET();
+		
 	}
 
 	@Then("User gets Response as Bad Request")
@@ -128,27 +161,29 @@ public class UserSkillMapGetStepDef {
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
-		//int statuscode = response.statusCode();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-
 		String responseBody = response.prettyPrint();
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is =>  " + responseBody);
+		
 	}
 
 	@When("User sends request with Blank id")
 	public void user_sends_request_with_blank_id() throws IOException {
 		requestSpecificationGET();
+		
 	}
 
 	@When("User sends request  with AlphaNumeric id")
 	public void user_sends_request_with_alpha_numeric_id() throws IOException {
 		requestSpecificationGET();
+		
 	}
 
 	@When("User sends request with Decimal as id")
 	public void user_sends_request_with_decimal_as_id() throws IOException {
 		requestSpecificationGET();
+		
 	}
 
 	@Given("User  sets GET request with a valid endpoint UserSkillsMap")
@@ -158,12 +193,13 @@ public class UserSkillMapGetStepDef {
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		path = properties.getProperty("skillmap.endpoint.getSkillMap");
-
+		
 	}
 	
 	@When("User sends request with query param")
 	public void user_sends_request_with_query_param() throws IOException {
 		requestSpecificationGET();
+		
 	}
 
 	@Then("User receives status code with valid json schema for all Skills")
@@ -174,9 +210,9 @@ public class UserSkillMapGetStepDef {
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMap_schemaGetAllSkills.json"));
 		System.out.println("Validated the schema");
-		
 		System.out.println("Response Status code is =>  " + response.statusCode());
 		System.out.println("Response Body is =>  " + responseBody);
+	
 	}
 
 	

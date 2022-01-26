@@ -3,8 +3,14 @@ package com.lms.api.stepdef.skills;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
+import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 
@@ -17,7 +23,7 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-
+import static org.junit.Assert.assertEquals;
 public class SkillDeleteStepDef {
 
 	RequestSpecification requestSpec;
@@ -28,7 +34,9 @@ public class SkillDeleteStepDef {
 	ExcelReaderUtil excelSheetReaderUtil;
 	Scenario scenario;
 	Properties properties;
-
+	Dbmanager dbmanager;
+	private static final Logger logger = LogManager.getLogger(SkillDeleteStepDef.class);
+	
 	public SkillDeleteStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -51,94 +59,97 @@ public class SkillDeleteStepDef {
 
 	@Given("User is on DELETE method with endpoint")
 	public void user_is_on_delete_method_with_endpoint() throws IOException {
+		logger.info("@Given User is on DELETE method with endpoint");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
-		System.out.println("SkillId is : " + skill_id);
+		
+		logger.debug("SkillId is : " + skill_id);
+		
 		path = properties.getProperty("skills.endpoint.Delete") + skill_id;
-		System.out.println("Path for Delete is " + path);
+		logger.debug("Path for Delete is " + path);
 
 	}
 
 	@When("User sends request with existing skill_id")
 	public void user_sends_request_with_existing_skill_id() throws IOException {
-		// requestSpecificationDelete();
-		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
-		String getPath = properties.getProperty("skills.endpoint") + skill_id;
-
-		// get the skill object for the skill id
-		response = requestSpec.when().get(getPath);
-		String responseBody = response.asPrettyString();
-
-		/*
-		 * // if skill object is exist for given skill id , go directly to delete if
-		 * (response.statusCode() == 200 && responseBody.contains(skill_id)) {
-		 * requestSpecificationDelete(); } else {
-		 * 
-		 * // post - create a new skill object using post and get newly created skill id
-		 * String postPath=properties.getProperty("endpointPost"); String body =
-		 * "{\"skill_name\": \"DataScience\"}"; requestSpec.body(body);
-		 * requestSpec.header("Content-Type", "application/json"); response =
-		 * requestSpec.when().post(postPath); String newSkillId =
-		 * response.jsonPath().getString("skill_id");
-		 * 
-		 * // delete the newly created skill id requestSpec.body("");
-		 * path=properties.getProperty("endpointDelete") + newSkillId;
-		 * requestSpecificationDelete(); }
-		 */
+		logger.info("@When User sends request with existing skill_id");
+		requestSpecificationDelete();
+		
 	}
 
 	@Then("User should be able to delete the existing skill_id")
 	public void user_should_be_able_to_delete_the_existing_skill_id() throws IOException {
+		logger.info("@Then User should be able to delete the existing skill_id");
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-
+		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
 		String responseBody = response.asPrettyString();
-		System.out.println("Actual Response Status code=>  " + response.statusCode()
+		logger.debug("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
-		System.out.println("Response Body is =>  " + responseBody);
+		logger.debug("Response Body is =>  " + responseBody);
 		// Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
+		
 		// Message validation
 		JsonPath js = new JsonPath(responseBody);
-		System.out.println(js);
+		logger.debug(js);
 		response.then().assertThat().extract().asString().contains("Deleted");
-		System.out.println("Response Message =>  " + responseMessage);
+		try {
+			//retrieve an arraylist from DBmanager
+			ArrayList<String> dbValidList = dbmanager.dbvalidationSkill(skill_id);
 
+			if (dbValidList.get(0) == "Deleted")
+				ExtentCucumberAdapter.addTestStepLog("DB validation for User " + skill_id + " is Deleted");
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		// System.out.println("Response Status code is => " + response.statusCode());
+		// System.out.println("Response Body is => " + responseBody);
+	
+		logger.debug("Response Message =>  " + responseMessage);
 	}
 
 	@When("User sends request with non-existing skill_id")
 	public void user_sends_request_with_non_existing_skill_id() {
+		logger.info("@When User sends request with non-existing skill_id");
 		requestSpecificationDelete();
 	}
 
 	@When("User sends request with blank skill_id")
 	public void user_sends_request_with_blank_skill_id() {
+		logger.info("@When User sends request with blank skill_id");
 		requestSpecificationDelete();
 	}
 
 	@When("User sends the request with alphanumeric skill Id")
 	public void user_sends_the_request_with_alphanumeric_skill_id() {
+		logger.info("@When User sends the request with alphanumeric skill Id");
 		requestSpecificationDelete();
 	}
 
 	@When("User enter the Skill_id as decimal")
 	public void user_enter_the_skill_id_as_decimal() {
+		logger.info("@When User enter the Skill_id as decimal");
 		requestSpecificationDelete();
 	}
 
 	@Then("User should recieve an error status code")
 	public void user_should_recieve_an_error_status_code() throws IOException {
+		logger.info("@Then User should recieve an error status code");
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		System.out.println("Actual Response Status code=>  " + response.statusCode()
+		logger.debug("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
 		String responseBody = response.asPrettyString();
-		System.out.println("Response Body is =>  " + responseBody);
+		logger.debug("Response Body is =>  " + responseBody);
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		System.out.println("Response Message =>  " + responseMessage);
+		logger.debug("Response Message =>  " + responseMessage);
 
 	}
 }

@@ -1,6 +1,7 @@
 #User logged in as "APIPROCESSING" with "Basic Auth"
 #JSON schema validation is done in the When before the post request and in Then of the response body.
 #DB Validation is done for the newly created skill.
+@userskillmap
 Feature: Post UserSkillMap Feature
   
 Scenario: To map new user and skill
@@ -33,7 +34,7 @@ Scenario: To map new user and skill with months of experience as alpha numeric
 			 Then User should receive error status code
 			 
 			 
-	Scenario: To map new user and skill with months of experience as null
+Scenario: To map new user and skill with months of experience as null
 			 Given User is on Post Method with endpoint url SkillsMap
 			 When User sends request with inputs where months of experience as null    
 			 Then User should receive error status code		 
