@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.lms.api.dbmanager.Dbmanager;
+import com.lms.api.stepdef.skills.SkillPostStepDef;
 import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
 import io.cucumber.java.Before;
@@ -38,7 +41,7 @@ public class UserGetStepDef {
 	Scenario scenario;
 	Properties properties;
 	Dbmanager dbmanager;
-
+	private static final Logger logger = LogManager.getLogger(UserGetStepDef.class);
 	public UserGetStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -182,7 +185,6 @@ public class UserGetStepDef {
 		
 		// DB validation for a get request for an existing user_id
 		assertEquals(validId, dbUserId);
-		ExtentCucumberAdapter.addTestStepLog("Get specific user " +dbUserId+ " record from DB : " + dbValidList.toString());
 
 	}
 

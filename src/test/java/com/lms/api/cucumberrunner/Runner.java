@@ -12,13 +12,17 @@ import io.cucumber.junit.CucumberOptions;
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources/features/",
 					 glue = {"com/lms/api/stepdef/user", "com/lms/api/stepdef/skillmap", "com/lms/api/stepdef/skills"},
-					// tags = "@blank",
-//@CucumberOptions(features = "src/test/resources/FeatureFiles/UserSkillMapGetStepDef.feature", glue = {"com/lms/api/stepdef/skillmap/"},
+					
+
 monochrome=true,
 dryRun = false,
-plugin = {"pretty","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+plugin = {"pretty","json:target/Cucumber.json",
+		"com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+	"timeline:test-output-thread/"}
 
-)
+	)
+
+
 public class Runner {
 
 }

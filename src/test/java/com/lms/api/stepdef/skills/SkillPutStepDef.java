@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
@@ -35,12 +38,12 @@ public class SkillPutStepDef {
 	ExcelReaderUtil excelSheetReaderUtil;
 	Properties properties;
 	Dbmanager dbmanager;
-
+	private static final Logger logger = LogManager.getLogger(SkillPutStepDef.class);
 	public SkillPutStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
 		dbmanager = new Dbmanager();
-
+		
 	}
 
 	@Before
@@ -57,35 +60,38 @@ public class SkillPutStepDef {
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpec.body(bodyExcel).log().body();
 		assertThat("Schema Validation Failed", bodyExcel, matchesJsonSchemaInClasspath("skillPut_schema.json"));
-		System.out.println("Validated the schema");
+		logger.info("Validated the schema");
 		response = requestSpec.when().put(path);
 
 	}
 
 	@Given("User is on PUT method with endpoint Skills")
 	public void user_is_on_put_method_with_endpoint_skills() throws IOException {
+		logger.info("@Given User is on PUT method with endpoint Skills");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
-		System.out.println("SkillId is : " + skill_id);
+		logger.info("SkillId is : " + skill_id);
 		path = properties.getProperty("skills.endpoint") + skill_id;
-		System.out.println("Path for Put is " + path);
+		logger.info("Path for Put is " + path);
 
 	}
 
 	@When("User sends request  with valid skill id with valid Json Schema")
 	public void user_sends_request_with_valid_skill_id_with_valid_json_schema() throws IOException {
+		logger.info("@When User sends request  with valid skill id with valid Json Schema");
 		requestSpecificationPut();
 
 	}
 
 	@Then("User should be able to update the Skill name and db is validated")
 	public void user_should_be_able_to_update_the_skill_name() throws IOException, SQLException {
+		logger.info("@Then User should be able to update the Skill name and db is validated");
 		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		System.out.println("Actual Response Status code=>  " + response.statusCode()
+		logger.info("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
 		String responseBody = response.prettyPrint();
 
@@ -98,7 +104,7 @@ public class SkillPutStepDef {
 		// Message validation
 		response.then().assertThat().extract().asString().contains("Skill Successfully Updated");
 
-		System.out.println("Response Message =>  " + responseMessage);
+		logger.info("Response Message =>  " + responseMessage);
 
 		// Retrieve a particular skill record from tbl_lms_skillmaster
 		ArrayList<String> dbValidList = dbmanager.dbvalidationSkill(skill_id);
@@ -114,50 +120,60 @@ public class SkillPutStepDef {
 		// Extracting a specific string response
 		String ResString = response.then().extract().asString();
 		JsonPath js = new JsonPath(ResString);
+		//String js_skill_id=js.get("skill_id");
+		//response.then().assertThat().extract().asString().contains(skill_id);
 
-		System.out.println("The Message in PUT is :  " + js.get("message"));
-		System.out.println("Response Body is =>  " + response.asPrettyString());
+		logger.info("The Message in PUT is :  " + js.get("message"));
+		logger.info("Response Body is =>  " + response.asPrettyString());
+		//String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
+		//assertEquals(bodyExcel,ResString);
 
 	}
 
 	@When("User sends request with valid skill name but non existing skill id")
 	public void user_sends_request_with_valid_skill_name_but_non_existing_skill_id() throws IOException {
+		logger.info("@When User sends request with valid skill name but non existing skill id");
 		requestSpecificationPut();
 	}
 
 	@When("User sends request with inputs like Selenium and Java")
 	public void user_sends_request_with_inputs_like_selenium_and_java() throws IOException {
+		logger.info("@When User sends request with inputs like Selenium and Java");
 		requestSpecificationPut();
 
 	}
 
 	@When("To update skill name with invalid datatypes")
 	public void to_update_skill_name_with_invalid_datatypes() throws IOException {
+		logger.info("@When To update skill name with invalid datatypes");
 		requestSpecificationPut();
 	}
 
 	@When("User sends request with blank skill Id")
 	public void user_sends_request_with_blank_skill_id() throws IOException {
+		logger.info("@When User sends request with blank skill Id");
 		requestSpecificationPut();
 	}
 
 	@When("User sends request  with existing skill name with valid Json Schema")
 	public void user_sends_request_with_existing_skill_name_with_valid_json_schema() throws IOException {
+		logger.info("@When User sends request  with existing skill name with valid Json Schema");
 		requestSpecificationPut();
 	}
 
 	@Then("User should not be able to update the Skill name")
 	public void user_should_not_be_able_to_update_the_skill_name() throws IOException {
+		logger.info("@Then User should not be able to update the Skill name");
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expresponseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		System.out.println("Actual Response Status code=>  " + response.statusCode()
+		logger.info("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
 		JsonPath js = response.jsonPath();
 		Object resp_msg = js.get("message");
 		// Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		System.out.println("Expected Response Message =>  " + expresponseMessage);
-		System.out.println("Response Body is =>  " + response.asPrettyString());
-		System.out.println("Response Message is =>  " + resp_msg);
+		logger.info("Expected Response Message =>  " + expresponseMessage);
+		logger.info("Response Body is =>  " + response.asPrettyString());
+		logger.info("Response Message is =>  " + resp_msg);
 	}
 }

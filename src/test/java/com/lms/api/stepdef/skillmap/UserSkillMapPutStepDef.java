@@ -3,6 +3,7 @@ package com.lms.api.stepdef.skillmap;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
+import io.restassured.module.jsv.JsonSchemaValidationException;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -58,6 +60,15 @@ public class UserSkillMapPutStepDef {
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		RequestSpec.header("Content-Type", "application/json");
 		RequestSpec.body(bodyExcel).log().all();
+		//Soft Assertion
+		/*assertThrows(JsonSchemaValidationException.class, () -> {
+
+			// Validation of requestBody with User schema
+			assertThat("Schema Validation Failed",bodyExcel, matchesJsonSchemaInClasspath("userSkillMap_schema.json"));
+			
+		});*/
+		
+		//Hard Assertion
 		assertThat("Schema Validation Failed",bodyExcel, matchesJsonSchemaInClasspath("userSkillMap_schema.json"));
 		response = RequestSpec.when().put(path + UserSkillsId);
 

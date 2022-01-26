@@ -1,6 +1,6 @@
 #JSON schema validation is done in the When before the get request and in Then of the response body.
 #DB Validation is done for the userSkillMap.
-@skillmap
+@userskillmap
 Feature: Get UserSkillMap Feature
        
 Scenario: To get all the Users with their Skill details

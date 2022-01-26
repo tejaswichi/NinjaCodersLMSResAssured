@@ -1,5 +1,5 @@
 #User logged in as "APIPROCESSING" with "Basic Auth"
-@skill
+@skill	
 Feature: Delete Skill Feature 
 
 Scenario: User wants to delete with existing skill id
@@ -21,7 +21,7 @@ Scenario: User enters the Skill_id as alphanumeric.
     Given User is on DELETE method with endpoint
     When User sends the request with alphanumeric skill Id
     Then User should recieve an error status code
-		
+	
 Scenario: User enters the skill id as decimal
     Given User is on DELETE method with endpoint
     When User enter the Skill_id as decimal

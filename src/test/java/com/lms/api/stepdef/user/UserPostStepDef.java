@@ -72,17 +72,8 @@ public class UserPostStepDef {
 	}
 
 	@When("User sends request with valid inputs")
-	public void user_sends_request_with_valid_inputs() throws IOException {
-		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
-		requestSpec.header("Content-Type", "application/json");
-		requestSpec.body(bodyExcel).log().all();
-
-		// Validation of requestBody with User schema
-		assertThat(bodyExcel, matchesJsonSchemaInClasspath("userPostRequest_schema.json"));
-		System.out.println("Validated the schema");
-		response = requestSpec.post(path);
-		// response = RequestSpec.request(Method.POST, path);
-
+	public void user_sends_request_with_valid_inputs() throws Exception {
+		requestSpecificationPost();
 	}
 
 	@Then("User should receive status code and message for post")
@@ -98,8 +89,7 @@ public class UserPostStepDef {
 		//String responseSchema = System.getProperty("/src/test/resources/user_response_schema.json");
 		// Post Schema Validation
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userResponse_schema.json"));
-		//assertThat(responseBody,ma)
-		
+				
 		//Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		
@@ -110,7 +100,7 @@ public class UserPostStepDef {
 		ArrayList<String> dbValidList = dbmanager.dbvalidationUser(newUser);
 		String dbUserId = dbValidList.get(0);
 		
-		ExtentCucumberAdapter.addTestStepLog("Newly created User record from DB : " + dbValidList.toString());
+		ExtentCucumberAdapter.addTestStepLog("User from DB : " + dbValidList.toString());
 		// DB validation for a post request for a newly created user_id
 		assertEquals(newUser, dbUserId);
 

@@ -3,7 +3,7 @@
 #DB Validation is done for the newly created user.
 @user
 Feature: Post User Feature
- 
+
 Scenario: Check if user is able to create new User Record
 		Given User is on Post Method with endpoint
 		When User sends request with valid inputs     
