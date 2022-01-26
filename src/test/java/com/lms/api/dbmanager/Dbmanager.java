@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 public class Dbmanager {
 	
-	//String url = "jdbc:postgresql://localhost:5454/lmssss";--->Lavisha's DB
-	String url = "jdbc:postgresql://localhost:5432/LMS_DB";
+	String url = "jdbc:postgresql://localhost:5454/lmssss";
+	//String url = "jdbc:postgresql://localhost:5432/LMS_DB";
 	String user = "postgres";
 	String password = "admin";
 	Statement stmt;

@@ -2,9 +2,9 @@
 #JSON schema validation is done in the When before the put request and in Then of the response body.
 #DB Validation is done for the updated skill.
 
-
-Feature: Put Skill Feature
 @skill
+Feature: Put Skill Feature
+
   Scenario: To update skill name in existing Skill Id
     Given User is on PUT method with endpoint Skills
     When User sends request  with valid skill id with valid Json Schema

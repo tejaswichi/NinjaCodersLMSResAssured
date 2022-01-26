@@ -1,14 +1,18 @@
 package com.lms.api.stepdef.skills;
 
+/*
+ * @Author : Tejaswi
+ * 
+ */
 import org.junit.runner.RunWith;
 
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = { "src/test/resources/features/SkillPut.feature" }, 
+@CucumberOptions(features = { "src/test/resources/features/" }, 
 				glue = {"com.lms.api.stepdef.skills" }, 
-				tags = "@skill",
+				//tags = "@skill",
 				monochrome = true,
 
 plugin = {"pretty","com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}

@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
@@ -35,7 +38,7 @@ public class UserSkillMapPutStepDef {
 	Scenario scenario;
 	Properties properties;
 	Dbmanager dbmanager;
-
+	private static final Logger logger = LogManager.getLogger(UserSkillMapPutStepDef.class);
 	public UserSkillMapPutStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -76,6 +79,7 @@ public class UserSkillMapPutStepDef {
 
 	@Given("User is on Put Method")
 	public void user_is_on_put_method() {
+		logger.info("@Given User is on Put Method ");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
@@ -84,6 +88,7 @@ public class UserSkillMapPutStepDef {
 
 	@When("User sends request with input as valid User_skill_Id")
 	public void user_sends_request_with_input_as_valid_user_skill_id() throws IOException {
+		logger.info("@When User sends request with input as valid User_skill_Id");
 
 		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
@@ -97,6 +102,7 @@ public class UserSkillMapPutStepDef {
 
 	@Then("User should receive valid status code")
 	public void user_should_receive_valid_status_code() throws IOException, Exception {
+		logger.info("@Then User should receive valid status code");
 		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
 
 		String expUpdateField = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UpdateField");
@@ -104,11 +110,11 @@ public class UserSkillMapPutStepDef {
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 
 		String responseBody = response.prettyPrint();
-		System.out.println("Response Body is =>  " + responseBody);
+		logger.info("Response Body is =>  " + responseBody);
 
 		// Put Schema Validation
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMapPutResponse_schema.json"));
-		System.out.println("Validated the response body schema");
+		logger.info("Validated the response body schema");
 
 		// Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
@@ -128,40 +134,43 @@ public class UserSkillMapPutStepDef {
 		// Message validation
 		response.then().assertThat().extract().asString().contains(expMessage);
 
-		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
-
-		System.out.println("Response Status code is =>  " + response.statusCode());
+		logger.info("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
+		logger.info("Response Status code is =>  " + response.statusCode());
 
 	}
 
 	@When("User sends request with input as invalid User_skill_Id")
 	public void user_sends_request_with_input_as_invalid_user_skill_id() throws IOException {
+		logger.info("@When User sends request with input as invalid User_skill_Id");
 		requestSpecificationPut();
 	}
 
 	@When("User sends request with input as invalid skill Id")
 	public void user_sends_request_with_input_as_invalid_skill_id() throws IOException {
+		logger.info("@When User sends request with input as invalid skill Id");
 		requestSpecificationPut();
 	}
 
 	@When("User sends request with number of months as input")
 	public void user_sends_request_with_number_of_months_as_input() throws IOException {
+		logger.info("@When User sends request with number of months as input");
 		requestSpecificationPut();
 	}
 
 	@Then("User should receive valid status code with updated months of exp")
 	public void user_should_receive_valid_status_code_with_updated_months_of_exp() throws IOException, Exception {
+		logger.info("@Then user_should_receive_valid_status_code_with_updated_months_of_exp");
 		String UserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
 		String expUpdateField = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UpdateField");
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 
 		String responseBody = response.prettyPrint();
-		System.out.println("Response Body is =>  " + responseBody);
+		logger.info("Response Body is =>  " + responseBody);
 
 		// Put Schema Validation
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userSkillMapPutResponse_schema.json"));
-		System.out.println("Validated the response body schema");
+		logger.info("Validated the response body schema");
 
 		// Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
@@ -181,19 +190,20 @@ public class UserSkillMapPutStepDef {
 		// Message validation
 		response.then().assertThat().extract().asString().contains(expMessage);
 
-		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
-
-		System.out.println("Response Status code is =>  " + response.statusCode());
+		logger.info("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
+		logger.info("Response Status code is =>  " + response.statusCode());
 
 	}
 
 	@When("User sends request with invalid input as boolean")
 	public void user_sends_request_with_invalid_input_as_boolean() throws IOException {
+		logger.info("@When User sends request with invalid input as boolean");
 		requestSpecificationPut();
 	}
 
 	@Then("User should receive Bad Requests")
 	public void user_should_receive_bad_requests() throws IOException {
+		logger.info("@Then User should receive Bad Requests");
 
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
@@ -205,9 +215,9 @@ public class UserSkillMapPutStepDef {
 		response.then().assertThat().extract().asString().contains(expMessage);
 		String responseBody = response.prettyPrint();
 
-		System.out.println(
+		logger.info(
 				"Expected response code: " + expStatusCode + "Actual response code:  " + response.statusCode());
-		System.out.println("Response Body is =>  " + responseBody);
+		logger.info("Response Body is =>  " + responseBody);
 
 	}
 

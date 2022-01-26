@@ -1,13 +1,16 @@
 package com.lms.api.stepdef.skills;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,7 +67,35 @@ public class SkillPutStepDef {
 		response = requestSpec.when().put(path);
 
 	}
+	
+	public List dataValidation(String excelString) {
+		System.out.println("bodyy" + excelString);
+		StringTokenizer bodyToken  = new StringTokenizer(excelString, ",");
+		System.out.println(bodyToken);
+		ArrayList list = new ArrayList<String>();
+		while(bodyToken.hasMoreTokens()) {
+			String str  = bodyToken.nextToken();
+			StringTokenizer stringToken  = new StringTokenizer(str, ":");
 
+			 int i = 1;
+			  while(stringToken.hasMoreTokens()) { 
+				  String str22 = stringToken.nextToken();
+				  //System.out.println("strrrrrr 2222  " + str22);
+				  if (i%2 ==0) {
+					  String str33 = str22.replaceAll("\"", "");
+					   list.add(str33);
+				  }
+				  i++;
+				  //System.out.println(" iiii" + i);
+			  }
+			}
+		//System.out.println(list);
+		//System.out.println(list.get(1));
+		return list;
+		
+	}
+		
+	
 	@Given("User is on PUT method with endpoint Skills")
 	public void user_is_on_put_method_with_endpoint_skills() throws IOException {
 		logger.info("@Given User is on PUT method with endpoint Skills");
@@ -122,7 +153,20 @@ public class SkillPutStepDef {
 		JsonPath js = new JsonPath(ResString);
 		//String js_skill_id=js.get("skill_id");
 		//response.then().assertThat().extract().asString().contains(skill_id);
-
+		//response.body("skill_name",equalTo("Jenkins"));
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
+		List skillFromExcel= dataValidation(bodyExcel);
+		
+		//response.then().assertThat().extract().asString().contains(skill_id);
+		//response.then().assertThat().extract().asString().contains((CharSequence) skillFromExcel.get(1));
+		//Object skill=Integer.parseInt(skill_id);
+		//assertEquals(skill,response.jsonPath().get("skill_id"));
+		String excelString=(String) skillFromExcel.get(1);
+		String responseString =response.jsonPath().get("skill_name");
+		System.out.println("Excel in String form :"+excelString.replaceAll("}", "").trim());
+		System.out.println("Response in String form :"+responseString);
+		assertEquals(excelString.replaceAll("}", "").trim(),response.jsonPath().get("skill_name"));
+		ExtentCucumberAdapter.addTestStepLog("Data validation Passed.Skill_id and Skill_name matched");
 		logger.info("The Message in PUT is :  " + js.get("message"));
 		logger.info("Response Body is =>  " + response.asPrettyString());
 		//String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");

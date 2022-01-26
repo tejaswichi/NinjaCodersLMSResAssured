@@ -37,36 +37,36 @@
 		</dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-testng</artifactId>
-            <version>${cucumber.version}</version>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-testng</artifactId>
+			<version>${cucumber.version}</version>
+		</dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-jvm-deps -->
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-jvm-deps</artifactId>
-            <version>1.0.6</version>
-            <scope>provided</scope>
-        </dependency>
+		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-jvm-deps -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-jvm-deps</artifactId>
+			<version>1.0.6</version>
+			<scope>provided</scope>
+		</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
-<!--		<dependency>-->
-<!--			<groupId>io.rest-assured</groupId>-->
-<!--			<artifactId>rest-assured</artifactId>-->
-<!--			<version>${rest-assured.version}</version>-->
-<!--		</dependency>-->
+		<!-- <dependency> -->
+		<!-- <groupId>io.rest-assured</groupId> -->
+		<!-- <artifactId>rest-assured</artifactId> -->
+		<!-- <version>${rest-assured.version}</version> -->
+		<!-- </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/io.rest-assured/json-schema-validator -->
-<!--		<dependency>-->
-<!--			<groupId>io.rest-assured</groupId>-->
-<!--			<artifactId>json-schema-validator</artifactId>-->
-<!--			<version>4.3.0</version>-->
-<!--			<scope>test</scope>-->
-<!--		</dependency>-->
+		<!-- <dependency> -->
+		<!-- <groupId>io.rest-assured</groupId> -->
+		<!-- <artifactId>json-schema-validator</artifactId> -->
+		<!-- <version>4.3.0</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 
 		<dependency>
 			<groupId>io.rest-assured</groupId>
@@ -83,24 +83,18 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--  https://mvnrepository.com/artifact/io.rest-assured/json-path  -->
+		<!-- https://mvnrepository.com/artifact/io.rest-assured/json-path -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>json-path</artifactId>
 			<version>${rest-assured.version}</version>
 		</dependency>
 
-		<!--  https://mvnrepository.com/artifact/io.rest-assured/xml-path  -->
+		<!-- https://mvnrepository.com/artifact/io.rest-assured/xml-path -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>xml-path</artifactId>
 			<version>${rest-assured.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>6.14.3</version>
-			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
@@ -132,11 +126,11 @@
 
 
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-<!--		<dependency>-->
-<!--			<groupId>org.apache.poi</groupId>-->
-<!--			<artifactId>poi</artifactId>-->
-<!--			<version>3.17</version>-->
-<!--		</dependency>-->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.poi</groupId> -->
+		<!-- <artifactId>poi</artifactId> -->
+		<!-- <version>3.17</version> -->
+		<!-- </dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
@@ -173,17 +167,65 @@
 			<artifactId>postgresql</artifactId>
 			<version>42.3.1</version>
 		</dependency>
-		
-		
+
 		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId>
-		    <version>2.17.1</version>
-		  </dependency>
-		 <dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
-		    <version>2.17.1</version>
-		 </dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-jvm</artifactId>
+			<version>6.8.1</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-surefire-plugin</artifactId>
+  <version>3.0.0-M5</version>
+  <type>maven-plugin</type>
+</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.8.1</version>
+			<type>maven-plugin</type>
+		</dependency>
 	</dependencies>
+	<build>
+
+		<plugins>
+			<!-- Rerun unittests with the multirelease jar, cannot be done with exploded 
+				directory of classes -->
+			<plugin>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.0.0-M3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<includes>
+								<include> **/Runner.java</include>
+							</includes>
+							<properties>
+							</properties>
+							<parallel>methods</parallel>
+							<threadCount>20</threadCount>
+							<perCoreThreadCount>true</perCoreThreadCount>
+							<!-- <reportsDirectory> ${project.build.directory}/failsafe-reports_${surefire.forkNumber} 
+								</reportsDirectory> -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>
