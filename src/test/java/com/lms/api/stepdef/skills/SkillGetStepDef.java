@@ -49,44 +49,11 @@ public class SkillGetStepDef {
 	Properties properties;
 	Dbmanager dbmanager;
 	private static final Logger logger = LogManager.getLogger(SkillGetStepDef.class);
-	
-	/*private int currentStepIndex = 0;
-	
-	@BeforeStep
-	public void beforeStep(Scenario scn){
-	  System.out.println(scenario.toString());
-	  
-	  currentStepIndex++;
-
-	    Field testCaseField = scn.getClass().getDeclaredField("testCase");
-	    testCaseField.setAccessible(true);
-
-	    TestCase tc = (TestCase) testCaseField.get(scn);
-	    Field testSteps = tc.getClass().getDeclaredField("testSteps");
-	    testSteps.setAccessible(true);
-
-	    List<TestStep> teststeps = tc.getTestStepsList();
-	    try {
-	        PickleStepTestStep pts = (PickleStepTestStep) teststeps.get(currentStepIndex);	
-	        logger.info("##########STEP##########");
-	        logger.info(pts.getStepText());
-	        logger.info("########################");
-	        currentStepIndex++;
-	    } catch (Exception ignore) {
-	    }
-	  
-	}
-
-	@AfterStep
-	public void afterStep(Scenario scenario){
-	  System.out.println(scenario.toString());
-	}*/
-	
+		
 	public SkillGetStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
 		dbmanager = new Dbmanager();
-		
 	}
 
 	@Before
@@ -95,7 +62,6 @@ public class SkillGetStepDef {
 		sheetGet = properties.getProperty("sheetGet");
 		excelSheetReaderUtil = new ExcelReaderUtil(properties.getProperty("skills.excel.path"));
 		excelSheetReaderUtil.readSheet(sheetGet);
-
 	}
 
 	public void requestSpecificationGet() {
@@ -106,14 +72,7 @@ public class SkillGetStepDef {
 
 	@Given("User is on GET method with endpoint Skills")
 	public void user_is_on_get_method_with_endpoint_skills() {
-		
-		/*  Method callingMethod = new Object() {} .getClass() .getEnclosingMethod();
-		   Annotation  myAnnotation = callingMethod.getAnnotations()[0]; 
-		   myAnnotation.*/
-		
 		logger.info("@Given User is on GET method with endpoint Skills");
-		// scenario.source[1].steps
-		// testcase.getTestSteps();
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));

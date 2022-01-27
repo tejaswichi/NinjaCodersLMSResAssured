@@ -80,19 +80,15 @@ public class SkillPutStepDef {
 			 int i = 1;
 			  while(stringToken.hasMoreTokens()) { 
 				  String str22 = stringToken.nextToken();
-				  //System.out.println("strrrrrr 2222  " + str22);
+				  
 				  if (i%2 ==0) {
 					  String str33 = str22.replaceAll("\"", "");
 					   list.add(str33);
 				  }
 				  i++;
-				  //System.out.println(" iiii" + i);
-			  }
+				 }
 			}
-		//System.out.println(list);
-		//System.out.println(list.get(1));
 		return list;
-		
 	}
 		
 	
@@ -151,16 +147,10 @@ public class SkillPutStepDef {
 		// Extracting a specific string response
 		String ResString = response.then().extract().asString();
 		JsonPath js = new JsonPath(ResString);
-		//String js_skill_id=js.get("skill_id");
-		//response.then().assertThat().extract().asString().contains(skill_id);
-		//response.body("skill_name",equalTo("Jenkins"));
+		
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		List skillFromExcel= dataValidation(bodyExcel);
 		
-		//response.then().assertThat().extract().asString().contains(skill_id);
-		//response.then().assertThat().extract().asString().contains((CharSequence) skillFromExcel.get(1));
-		//Object skill=Integer.parseInt(skill_id);
-		//assertEquals(skill,response.jsonPath().get("skill_id"));
 		String excelString=(String) skillFromExcel.get(1);
 		String responseString =response.jsonPath().get("skill_name");
 		System.out.println("Excel in String form :"+excelString.replaceAll("}", "").trim());
@@ -169,9 +159,6 @@ public class SkillPutStepDef {
 		ExtentCucumberAdapter.addTestStepLog("Data validation Passed.Skill_id and Skill_name matched");
 		logger.info("The Message in PUT is :  " + js.get("message"));
 		logger.info("Response Body is =>  " + response.asPrettyString());
-		//String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
-		//assertEquals(bodyExcel,ResString);
-
 	}
 
 	@When("User sends request with valid skill name but non existing skill id")

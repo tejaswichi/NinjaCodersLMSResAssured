@@ -1,6 +1,6 @@
 #JSON schema validation is done in the When before the get request and in Then of the response body.
 #DB Validation is done for the user.
-@user
+#@user
 Feature: Get User Feature
        
 Scenario: To check Authorization without providing username and password
@@ -19,7 +19,7 @@ Scenario: To check Authorization with invalid username and valid password
     Then User should receive error status code and message for get
 
 #  Only the required fields are shown in the response body, validated using schema 
-@check
+
 Scenario: To check if able to read all the user records
     Given User is on Get Method with end point
     When  User sends the request with valid inputs

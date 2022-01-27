@@ -20,7 +20,7 @@ Scenario: User trying to delete the user_skill_id with blank user_skill_ Id
 			 
 Scenario: User trying to delete the user_skill_id with special characters user_skill_ Id
 			 Given User is on DELETE Method
-			 When User sends request with  user_skill_id as special characters   
+			 When User sends request with user_skill_id as special characters   
 			 Then User should recieve an error status code for UserSkillMap			 
 			 
 Scenario: User trying to delete the user_skill_id with decimal user_skill_ Id

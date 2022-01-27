@@ -120,8 +120,8 @@ public class UserSkillMapDeleteStepDef {
 		requestSpecificationDelete();
 	}
 
-	@When("User sends request with  user_skill_id as alphanumeric")
-	public void user_sends_request_with_user_skill_id_as_alphanumeric() throws IOException {
+	@When("User sends request with user_skill_id as special characters")
+	public void user_sends_request_with_user_skill_id_as_special_characters() throws IOException {
 		logger.info("@When User sends request with  user_skill_id as alphanumeric");
 		requestSpecificationDelete();
 	}
