@@ -6,7 +6,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +17,7 @@ import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
+
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
@@ -32,8 +35,9 @@ public class UserPutStepDef {
 	String userId;
 	String path;
 	String sheetPut;
-	static String bodyarray[];
 	boolean putResult;
+	static String bodyarray[];
+
 	static String exUserId;
 
 	ExcelReaderUtil excelSheetReaderUtil;
@@ -55,15 +59,12 @@ public class UserPutStepDef {
 		sheetPut = properties.getProperty("sheetPut");
 		excelSheetReaderUtil = new ExcelReaderUtil(properties.getProperty("userapi.excel.path"));
 		excelSheetReaderUtil.readSheet(sheetPut);
+
 	}
 
 	public void requestSpecification() throws Exception {
 		RequestSpec.header("Content-Type", "application/json");
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
-		String bodyarray[] = bodyExcel.split(",");
-		for(String e: bodyarray) {
-			System.out.println(e);
-		}
 		RequestSpec.body(bodyExcel).log().all();
 
 		// Validation of requestBody with User schema
@@ -71,6 +72,30 @@ public class UserPutStepDef {
 		response = RequestSpec.when().put(path);
 
 	}
+	
+	public List dataValidation(String excelString) {
+		System.out.println("bodyy" + excelString);
+		StringTokenizer bodyToken  = new StringTokenizer(excelString, ",");
+		System.out.println(bodyToken);
+		ArrayList list = new ArrayList<String>();
+		while(bodyToken.hasMoreTokens()) {
+			String str  = bodyToken.nextToken();
+			StringTokenizer stringToken  = new StringTokenizer(str, ":");
+
+			 int i = 1;
+			  while(stringToken.hasMoreTokens()) { 
+				  String str22 = stringToken.nextToken();
+				  
+				  if (i%2 ==0) {
+					  String str33 = str22.replaceAll("\"", "");
+					   list.add(str33);
+				  }
+				  i++;
+				 }
+			}
+		return list;
+	}
+		
 
 	@Given("^User is on Put Method with endpoint")
 	public void user_is_on_put_method_with_endpoint() throws IOException {
@@ -111,16 +136,23 @@ public class UserPutStepDef {
 
 		// Message validation
 		response.then().assertThat().extract().asString().contains("User Successfully Updated");
-
+		
+		String resString = response.then().extract().asString();
+				
+		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
+		List skillFromExcel= dataValidation(bodyExcel);
+		
+		System.out.println(skillFromExcel);
+		for (Object ob : skillFromExcel) {
+			String single = (String) ob;
+				response.then().assertThat().extract().response().asString().contains(single);
+		}
+		ExtentCucumberAdapter.addTestStepLog("User is updated and data is validated: " + skillFromExcel);
+		
 		// Retrieve an updated user_id from tbl_lms_user
 		ArrayList<String> dbValidList = dbmanager.dbvalidationUser(userId);
 		String dbUserId = dbValidList.get(0);
-		putResult = response.equals(dbValidList);
-		if(putResult = "true" != null)
-			ExtentCucumberAdapter.addTestStepLog("Failed to update the user");
-		else 
-			ExtentCucumberAdapter.addTestStepLog("User is updated");
-		
+	
 		// DB validation for a put request for updated user_id
 		assertEquals(userId, dbUserId);
 

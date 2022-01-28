@@ -2,7 +2,6 @@ package com.lms.api.stepdef.user;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -14,9 +13,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
-import com.lms.api.stepdef.skills.SkillPostStepDef;
 import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
+
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
@@ -109,6 +108,12 @@ public class UserGetStepDef {
 		logger.info("@When User sends incorrect username and correct password");
 		requestSpecification();
 	}
+	
+	@When("User sends valid username and password")
+	public void User_sends_valid_username_and_password() {
+		logger.info("@When User sends valid username and password");
+		requestSpecification();
+	}
 
 	@Then("User should receive error status code and message for get")
 	public void user_should_receive_error_status_code_and_message_for_get() throws Exception {
@@ -130,7 +135,6 @@ public class UserGetStepDef {
 		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		//assertThat(Integer.parseInt(expStatusCode),is(response.statusCode()));
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userGetAll_schema.json"));
 		logger.info("Response Status code is =>  " + response.statusCode());
 	}
@@ -229,6 +233,16 @@ public class UserGetStepDef {
 	public void user_sends_request_with_a_blank_user_id() {
 		logger.info("@When User sends request with a blank userId");
 		requestSpecification();
+	}
+	
+	@Then("User should receive success status code for get")
+	public void User_should_receive_success_status_code_for_get() throws IOException {
+		logger.info("@Then User should receive success status code for get");
+		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
+		String responseBody = response.prettyPrint();
+		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
+		logger.info("Response Status code is =>  " + response.statusCode());
+		logger.info("Response Body is => " + responseBody);
 	}
 
 	@Then("User should receive error status code for get")

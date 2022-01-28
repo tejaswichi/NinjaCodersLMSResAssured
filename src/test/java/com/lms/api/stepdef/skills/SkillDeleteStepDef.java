@@ -23,7 +23,6 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import static org.junit.Assert.assertEquals;
 public class SkillDeleteStepDef {
 
 	RequestSpecification requestSpec;
@@ -98,7 +97,7 @@ public class SkillDeleteStepDef {
 		logger.debug(js);
 		response.then().assertThat().extract().asString().contains("Deleted");
 		try {
-			//retrieve an arraylist from DBmanager
+			//retrieve an array list from DBmanager
 			ArrayList<String> dbValidList = dbmanager.dbvalidationSkill(skill_id);
 
 			if (dbValidList.get(0) == "Deleted")
@@ -109,10 +108,7 @@ public class SkillDeleteStepDef {
 			e.printStackTrace();
 		}
 		
-		// System.out.println("Response Status code is => " + response.statusCode());
-		// System.out.println("Response Body is => " + responseBody);
-	
-		logger.debug("Response Message =>  " + responseMessage);
+			logger.debug("Response Message =>  " + responseMessage);
 	}
 
 	@When("User sends request with non-existing skill_id")

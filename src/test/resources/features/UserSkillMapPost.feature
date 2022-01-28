@@ -1,6 +1,7 @@
 #User logged in as "APIPROCESSING" with "Basic Auth"
 #JSON schema validation is done in the When before the post request and in Then of the response body.
-#DB Validation is done for the newly created skill.
+#DB Validation is done for the newly created Userskill.
+
 @userskillmap
 Feature: Post UserSkillMap Feature
   

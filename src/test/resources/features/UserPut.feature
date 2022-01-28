@@ -4,7 +4,6 @@
 @user
 Feature: Put user feature
 
-
 Scenario: To update user name with valid input
     Given User is on Put Method with endpoint
     When User sends request to update user name with valid input
