@@ -1,5 +1,6 @@
 #User logged in as "APIPROCESSING" with "Basic Auth"
 #JSON schema validation is done in the When before the post request and in Then of the response body.
+
 @userskillmap
 Feature: Delete UserSkillMap Feature
   

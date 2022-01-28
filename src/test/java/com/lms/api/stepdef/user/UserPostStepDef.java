@@ -111,6 +111,11 @@ public class UserPostStepDef {
 		logger.info("Response Status code is =>  " + response.statusCode());
 		logger.info("Response Body is =>  " + responseBody);
 	}
+	
+	@When ("User sends request with duplicate record")
+	public void User_sends_request_with_duplicate_record() throws Exception {
+		requestSpecificationPost();
+	}
 
 	@When("User sends request with blank inputs for visa status and location")
 	public void user_sends_request_with_blank_inputs_for_visa_status_and_location() throws Exception {
@@ -156,6 +161,12 @@ public class UserPostStepDef {
 
 	@When("User sends request with invalid phone number")
 	public void user_sends_request_with_invalid_phone_number() throws Exception {
+		logger.info("@When User sends request with invalid phone number");
+		requestSpecificationPost();
+	}
+	
+	@When("User sends request with phone number less than ten digits")
+	public void user_sends_request_with_phone_number_less_than_ten_digits() throws Exception {
 		logger.info("@When User sends request with invalid phone number");
 		requestSpecificationPost();
 	}

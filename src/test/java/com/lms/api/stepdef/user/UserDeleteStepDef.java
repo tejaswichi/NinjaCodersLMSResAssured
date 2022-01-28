@@ -11,16 +11,15 @@ import org.apache.logging.log4j.Logger;
 
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
-import com.lms.api.stepdef.skills.SkillDeleteStepDef;
 import com.lms.api.utilities.ExcelReaderUtil;
 import com.lms.api.utilities.PropertiesReaderUtil;
+
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -37,9 +36,9 @@ public class UserDeleteStepDef {
 
 	Properties properties;
 	Dbmanager dbmanager;
-	
+
 	private static final Logger logger = LogManager.getLogger(UserDeleteStepDef.class);
-	
+
 	public UserDeleteStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -51,7 +50,6 @@ public class UserDeleteStepDef {
 
 		this.scenario = scenario;
 		sheetDelete = properties.getProperty("sheetDelete");
-		// System.out.println(sheetPost);
 		excelSheetReaderUtil = new ExcelReaderUtil(properties.getProperty("userapi.excel.path"));
 		excelSheetReaderUtil.readSheet(sheetDelete);
 	}
@@ -110,20 +108,26 @@ public class UserDeleteStepDef {
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
 		// Message validation
-		JsonPath js = new JsonPath(responseBody);
-		response.then().assertThat().extract().asString().contains("Deleted");
-
+		if (responseBody.contains(expMessage))
+			ExtentCucumberAdapter.addTestStepLog("Delete message validation passed");
+		else
+			ExtentCucumberAdapter.addTestStepLog("Delete message validation failed");
+		/*
+		 * JsonPath jsonPath = response.jsonPath(); String splitMessage[] =
+		 * jsonPath.get("message"); String actualMessage = splitMessage[1];
+		 * assertEquals(expMessage, actualMessage);
+		 */
 		try {
-			//retrieve an array list from DBmanager
+			// retrieve an array list from DBmanager
 			ArrayList<String> dbValidList = dbmanager.dbvalidationUser(userId);
 
-			if (dbValidList.get(0) == "Deleted")
+			if (dbValidList.get(0) == expMessage)
 				ExtentCucumberAdapter.addTestStepLog("DB validation for User " + userId + " is Deleted");
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Given("User is on Delete Method with endpoint without userid as parameter")
@@ -151,7 +155,7 @@ public class UserDeleteStepDef {
 		// Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		logger.info("Response Status code is => " + response.statusCode());
-		
+
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.lms.api.stepdef.skills;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
@@ -36,6 +35,7 @@ public class SkillPutStepDef {
 	Response response;
 	String sheetPut;
 	String path;
+	boolean putResult;
 
 	Scenario scenario;
 	ExcelReaderUtil excelSheetReaderUtil;
@@ -136,11 +136,12 @@ public class SkillPutStepDef {
 		// Retrieve a particular skill record from tbl_lms_skillmaster
 		ArrayList<String> dbValidList = dbmanager.dbvalidationSkill(skill_id);
 		String dbskill_Id = dbValidList.get(0);
-		boolean putResult = response.equals(dbValidList);
-		if(putResult = "true" != null)
-			ExtentCucumberAdapter.addTestStepLog("Failed to update the user");
-		else 
+		putResult = response.body().equals(dbValidList);
+		if(putResult = true)
 			ExtentCucumberAdapter.addTestStepLog("User is updated: ");
+		else 
+			ExtentCucumberAdapter.addTestStepLog("Failed to update the user");
+			
 		// DB validation for a get request for an existing skill_id
 		assertEquals(skill_id, dbskill_Id);
 
@@ -153,8 +154,7 @@ public class SkillPutStepDef {
 		
 		String excelString=(String) skillFromExcel.get(1);
 		String responseString =response.jsonPath().get("skill_name");
-		System.out.println("Excel in String form :"+excelString.replaceAll("}", "").trim());
-		System.out.println("Response in String form :"+responseString);
+		logger.info("Response in String form :"+responseString);
 		assertEquals(excelString.replaceAll("}", "").trim(),response.jsonPath().get("skill_name"));
 		ExtentCucumberAdapter.addTestStepLog("Data validation Passed.Skill_id and Skill_name matched");
 		logger.info("The Message in PUT is :  " + js.get("message"));

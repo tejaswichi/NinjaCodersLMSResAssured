@@ -3,7 +3,6 @@ package com.lms.api.stepdef.skillmap;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.module.jsv.JsonSchemaValidationException;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 

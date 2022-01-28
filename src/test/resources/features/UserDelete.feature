@@ -1,7 +1,7 @@
 #User logged in as "APIPROCESSING" with "Basic Auth"
+#DB Validation is done for the deleted user.
 @user
 Feature: Delete User Feature
-
 
 Scenario: To delete the user id with existing user id
     Given User is on Delete Method with endpoint

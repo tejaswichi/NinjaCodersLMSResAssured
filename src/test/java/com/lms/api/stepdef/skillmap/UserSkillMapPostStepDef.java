@@ -3,7 +3,6 @@ package com.lms.api.stepdef.skillmap;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
-import io.restassured.module.jsv.JsonSchemaValidationException;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -104,8 +102,7 @@ public class UserSkillMapPostStepDef {
 	@When("User sends request with inputs where skill id is alphanumeric")
 	public void user_sends_request_with_inputs_where_skill_id_is_alphanumeric() throws IOException {
 		logger.info("@When User sends request with inputs where skill id is alphanumeric");
-		// requestSpecificationPOST();
-		requestSpecificationPOSTWhenExceptionExpected();
+			requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@Then("User should receive valid status codes")
@@ -117,29 +114,25 @@ public class UserSkillMapPostStepDef {
 	@When("User sends request with inputs where skill id is null")
 	public void user_sends_request_with_inputs_where_skill_id_is_null() throws IOException {
 		logger.info("@When User sends request with inputs where skill id is null");
-		// requestSpecificationPOST();
 		requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@When("User sends request with inputs where user id is null")
 	public void user_sends_request_with_inputs_where_user_id_is_null() throws IOException {
 		logger.info("@When User sends request with inputs where user id is null");
-		// requestSpecificationPOST();
 		requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@When("User sends request with inputs where month of experience is alphanumeric")
 	public void user_sends_request_with_inputs_where_month_of_experience_is_alphanumeric() throws IOException {
 		logger.info("@When User sends request with inputs where month of experience is alphanumeric");
-		// requestSpecificationPOST();
 		requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@When("User sends request with inputs where months of experience as null")
 	public void user_sends_request_with_inputs_where_months_of_experience_as_null() throws IOException {
 		logger.info("@When User sends request with inputs where months of experience as null");
-		// requestSpecificationPOST();
-		requestSpecificationPOSTWhenExceptionExpected();
+			requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	private void requestSpecificationPOSTWhenExceptionExpected() throws IOException {

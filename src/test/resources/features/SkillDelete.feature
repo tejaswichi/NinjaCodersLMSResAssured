@@ -1,4 +1,6 @@
 #User logged in as "APIPROCESSING" with "Basic Auth"
+#DB Validation is done for the deleted skill.
+
 @skill	
 Feature: Delete Skill Feature 
 
