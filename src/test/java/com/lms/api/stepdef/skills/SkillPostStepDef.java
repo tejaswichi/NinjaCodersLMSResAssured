@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
@@ -36,8 +32,7 @@ public class SkillPostStepDef {
 	String sheetPost;
 	Properties properties;
 	Dbmanager dbmanager;
-	private static final Logger logger = LogManager.getLogger(SkillPostStepDef.class);
-
+	
 	public SkillPostStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -60,37 +55,37 @@ public class SkillPostStepDef {
 		String bodyExcel = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Body");
 		requestSpec.body(bodyExcel).log().body();
 		assertThat("Schema Validation Failed",bodyExcel, matchesJsonSchemaInClasspath("skillPost_schema.json"));
-		logger.info("Validated the schema");
+		System.out.println("Validated the schema");
 		response = requestSpec.when().post(path);
 
 	}
 
 	@Given("User is on POST method with endpoint url Skills")
 	public void user_is_on_post_method_with_endpoint_url_skills() throws IOException {
-		logger.info("@Given User is on POST method with endpoint url Skills");
+		
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		path = properties.getProperty("skills.endpoint.Post");
-		logger.info("Path for Post is " + path);
+		System.out.println("Path for Post is " + path);
 	}
 
 	@When("User sends request with inputs  skill name with valid Json Schema")
 	public void user_sends_request_with_inputs_skill_name_with_valid_json_schema() throws IOException {
-		logger.info("@When User sends request with inputs  skill name with valid Json Schema");
+	
 		requestSpecificationPost();
 
 	}
 
 	@Then("User is able to create a new Skill id and db is validated")
 	public void user_is_able_to_create_a_new_skill_id_and_db_is_validated() throws IOException, SQLException {
-		logger.info("@Then User is able to create a new Skill id and db is validated");
+		
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
-		logger.info("Response Body is =>  " + response.asPrettyString());
+		System.out.println("Response Body is =>  " + response.asPrettyString());
 		// Post Schema Validation
 		assertThat(response.asPrettyString(), matchesJsonSchemaInClasspath("skillResponse_schema.json"));
 		
@@ -99,7 +94,7 @@ public class SkillPostStepDef {
 		
 		//Message validation
 		response.then().assertThat().extract().asString().contains(expMessage);
-		logger.info("Response Message =>  " + expMessage);
+		System.out.println("Response Message =>  " + expMessage);
 		
 		//Retrieve the auto generated skillid from response
 		JsonPath js = response.jsonPath();
@@ -116,47 +111,47 @@ public class SkillPostStepDef {
 
 	@When("User sends request with blank inputs")
 	public void user_sends_request_with_blank_inputs() throws IOException {
-		logger.info("@When User sends request with blank inputs");
+		
 		requestSpecificationPost();
 	}
 
 	@When("User sends request with boolean as skill name")
 	public void user_sends_request_with_boolean_as_skill_name() throws IOException {
-		logger.info("@When User sends request with boolean as skill name");
+		
 		requestSpecificationPost();
 	}
 
 	@When("User sends request with integer as  skill name")
 	public void user_sends_request_with_integer_as_skill_name() throws IOException {
-		logger.info("@When User sends request with integer as  skill name");
+		
 		requestSpecificationPost();
 	}
 
 	@When("User sends request with Alphanumeric as skill name")
 	public void user_sends_request_with_alphanumeric_as_skill_name() throws IOException {
-		logger.info("@When User sends request with Alphanumeric as skill name");
+		
 		requestSpecificationPost();
 	}
 
 	@When("User sends request with an existing skill name")
 	public void user_sends_request_with_an_existing_skill_name() throws IOException {
-		logger.info("@When User sends request with an existing skill name");
+	
 		requestSpecificationPost();
 	}
 
 	@Then("User cannot create a new Skill id")
 	public void user_cannot_create_a_new_skill_id() throws IOException {
-		logger.info("@Then User cannot create a new Skill id");
+		
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
 		
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
-		logger.info("Response Body is =>  " + response.asPrettyString());
+		System.out.println("Response Body is =>  " + response.asPrettyString());
 		
 		//Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		logger.info("Response Message =>  " + responseMessage);
+		System.out.println("Response Message =>  " + responseMessage);
 	}
 
 }

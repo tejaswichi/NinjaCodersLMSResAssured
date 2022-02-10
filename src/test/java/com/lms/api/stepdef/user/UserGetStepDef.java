@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
@@ -41,7 +38,7 @@ public class UserGetStepDef {
 	Scenario scenario;
 	Properties properties;
 	Dbmanager dbmanager;
-	private static final Logger logger = LogManager.getLogger(UserGetStepDef.class);
+	
 	public UserGetStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -65,7 +62,7 @@ public class UserGetStepDef {
 	
 	@Given("User is on Get Method with end point and no authentication")
 	public void user_is_on_get_method_with_end_point_and_no_authentication() {
-		logger.info("@Given User is on Get Method with end point and no authentication");
+		System.out.println("@Given User is on Get Method with end point and no authentication");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given();
 		path = properties.getProperty("endpoint");
@@ -73,22 +70,22 @@ public class UserGetStepDef {
 
 	@When("User sends request without username and password")
 	public void user_sends_request_without_username_and_password() {
-		logger.info("@When User sends request without username and password");
+		System.out.println("@When User sends request without username and password");
 		requestSpecification();
 	}
 
 	@Then("User should receive error status code and message for auth")
 	public void user_should_receive_error_status_code_and_message_for_auth() {
-		logger.info("@Then User should receive error status code and message for auth");
+		System.out.println("@Then User should receive error status code and message for auth");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(properties.getProperty("authStatusCode")), response.statusCode());
-		logger.info("Response Status code is =>  " + response.statusCode());
-		logger.info("Response Body is => " + responseBody);
+		System.out.println("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Body is => " + responseBody);
 	}
 
 	@Given("User is on Get Method with end point")
 	public void user_is_on_get_method_with_end_point() throws IOException {
-		logger.info("@Given User is on Get Method with end point");
+		System.out.println("@Given User is on Get Method with end point");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		String ex_username = excelReaderUtil.getDataFromExcel(scenario.getName(), "Username");
 		String ex_password = excelReaderUtil.getDataFromExcel(scenario.getName(), "Password");
@@ -99,49 +96,49 @@ public class UserGetStepDef {
 
 	@When("User sends correct username and incorrect password")
 	public void user_sends_correct_username_and_incorrect_password() {
-		logger.info("@When User sends correct username and incorrect password");
+		System.out.println("@When User sends correct username and incorrect password");
 		requestSpecification();
 	}
 
 	@When("User sends incorrect username and correct password")
 	public void user_sends_incorrect_username_and_correct_password() {
-		logger.info("@When User sends incorrect username and correct password");
+		System.out.println("@When User sends incorrect username and correct password");
 		requestSpecification();
 	}
 	
 	@When("User sends valid username and password")
 	public void User_sends_valid_username_and_password() {
-		logger.info("@When User sends valid username and password");
+		System.out.println("@When User sends valid username and password");
 		requestSpecification();
 	}
 
 	@Then("User should receive error status code and message for get")
 	public void user_should_receive_error_status_code_and_message_for_get() throws Exception {
-		logger.info("@Then User should receive error status code and message for get");
+		System.out.println("@Then User should receive error status code and message for get");
 		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		logger.info("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Status code is =>  " + response.statusCode());
 	}
 
 	@When("User sends the request with valid inputs")
 	public void user_sends_the_request_with_valid_inputs() {
-		logger.info("@When User sends the request with valid inputs");
+		System.out.println("@When User sends the request with valid inputs");
 		requestSpecification();
 	}
 
 	@Then("User is able to read all user details and receive status code for get")
 	public void user_is_able_to_read_all_user_details_and_receive_status_code_for_get() throws Exception {
-		logger.info("@Then User is able to read all user details and receive status code for get");
+		System.out.println("@Then User is able to read all user details and receive status code for get");
 		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userGetAll_schema.json"));
-		logger.info("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Status code is =>  " + response.statusCode());
 	}
 
 	@Given("User is on Get Method with end point for single user")
 	public void user_is_on_get_method_with_end_point_for_single_user() throws IOException {
-		logger.info("@Given User is on Get Method with end point for single user");
+		System.out.println("@Given User is on Get Method with end point for single user");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		String ex_username = excelReaderUtil.getDataFromExcel(scenario.getName(), "Username");
 		String ex_password = excelReaderUtil.getDataFromExcel(scenario.getName(), "Password");
@@ -160,29 +157,29 @@ public class UserGetStepDef {
 			
 			path = properties.getProperty("endpointGet") + userId;
 			validId = userId;
-			logger.info("UserId from excel : " + validId);
+			System.out.println("UserId from excel : " + validId);
 			
 
 	}
 
 	@When("User sends the request with existing userId")
 	public void user_sends_the_request_with_existing_user_id() {
-		logger.info("@When User sends the request with existing userId");
+		System.out.println("@When User sends the request with existing userId");
 		requestSpecification();
 
 	}
 
 	@Then("User should receive status code and db is validated for specific user")
 	public void user_should_receive_status_code_and_db_is_validated_for_specific_user() throws Exception {
-		logger.info("@Then User should receive status code and db is validated for specific user");
+		System.out.println("@Then User should receive status code and db is validated for specific user");
 		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 		+ "  Expected Response Status code=>  " + expStatusCode);
 		assertThat(responseBody, matchesJsonSchemaInClasspath("userGet_schema.json"));
-		logger.info("Response Status code is =>  " + response.statusCode());
-		logger.info("Response Body is => " + responseBody);
+		System.out.println("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Body is => " + responseBody);
 		
 		JsonPath js = response.jsonPath();
 		String rsUser_id = js.get("user_id");
@@ -190,7 +187,7 @@ public class UserGetStepDef {
 		// Retrieve a particular user record from tbl_lms_user
 		ArrayList<String> dbValidList = dbmanager.dbvalidationUser(rsUser_id);
 		String dbUserId = dbValidList.get(0);
-		logger.info("User id from db :  " +dbUserId);
+		System.out.println("User id from db :  " +dbUserId);
 		// DB validation for a get request for an existing user_id
 		assertEquals(validId, dbUserId);
 		ExtentCucumberAdapter.addTestStepLog("Get specific User " +dbUserId+ " record from DB : " + dbValidList.toString());
@@ -198,31 +195,31 @@ public class UserGetStepDef {
 
 	@When("User sends request with invalid userId")
 	public void user_sends_request_with_invalid_user_id() {
-		logger.info("@When User sends request with invalid userId");
+		System.out.println("@When User sends request with invalid userId");
 		requestSpecification();
 	}
 
 	@When("User sends request with alphanumeric userId")
 	public void user_sends_request_with_alphanumeric_user_id() {
-		logger.info("@When User sends request with alphanumeric userId");
+		System.out.println("@When User sends request with alphanumeric userId");
 		requestSpecification();
 	}
 
 	@When("User sends request with a null userId")
 	public void user_sends_request_with_a_null_user_id() {
-		logger.info("@When User sends request with a null userId");
+		System.out.println("@When User sends request with a null userId");
 		requestSpecification();
 	}
 
 	@When("User sends request with a decimal userId")
 	public void user_sends_request_with_a_decimal_user_id() {
-		logger.info("@When User sends request with a decimal userId");
+		System.out.println("@When User sends request with a decimal userId");
 		requestSpecification();
 	}
 
 	@Given("User is on Get Method with end point with userID as blank")
 	public void user_is_on_get_method_with_end_point_with_user_id_as_blank() {
-		logger.info("@Given User is on Get Method with end point with userID as blank");
+		System.out.println("@Given User is on Get Method with end point with userID as blank");
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
@@ -231,27 +228,27 @@ public class UserGetStepDef {
 
 	@When("User sends request with a blank userId")
 	public void user_sends_request_with_a_blank_user_id() {
-		logger.info("@When User sends request with a blank userId");
+		System.out.println("@When User sends request with a blank userId");
 		requestSpecification();
 	}
 	
 	@Then("User should receive success status code for get")
 	public void User_should_receive_success_status_code_for_get() throws IOException {
-		logger.info("@Then User should receive success status code for get");
+		System.out.println("@Then User should receive success status code for get");
 		String expStatusCode = excelReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		logger.info("Response Status code is =>  " + response.statusCode());
-		logger.info("Response Body is => " + responseBody);
+		System.out.println("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Body is => " + responseBody);
 	}
 
 	@Then("User should receive error status code for get")
 	public void user_should_receive_error_status_code_for_get() {
-		logger.info("@Then User should receive error status code for get");
+		System.out.println("@Then User should receive error status code for get");
 		invStatusCode = properties.getProperty("invStatusCode");
 		String responseBody = response.prettyPrint();
 		assertEquals(Integer.parseInt(invStatusCode), response.statusCode());
-		logger.info("Response Status code is =>  " + response.statusCode());
-		logger.info("Response Body is => " + responseBody);
+		System.out.println("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Body is => " + responseBody);
 	}
 }

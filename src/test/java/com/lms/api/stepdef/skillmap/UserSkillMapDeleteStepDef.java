@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import static org.junit.Assert.assertEquals;
 
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
@@ -37,7 +34,7 @@ public class UserSkillMapDeleteStepDef {
 
 	Properties properties;
 	Dbmanager dbmanager;
-	private static final Logger logger = LogManager.getLogger(UserSkillMapDeleteStepDef.class);
+	
 	public UserSkillMapDeleteStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -64,7 +61,7 @@ public class UserSkillMapDeleteStepDef {
 
 	@Given("User is on DELETE Method")
 	public void user_is_on_delete_method() {
-		logger.info("@Given User is on DELETE Method");
+		System.out.println("@Given User is on DELETE Method");
 
 		RestAssured.baseURI = properties.getProperty("base_uri");
 
@@ -76,17 +73,17 @@ public class UserSkillMapDeleteStepDef {
 
 	@When("User sends request with existing user_skill_ Id  as input")
 	public void user_sends_request_with_existing_user_skill_id_as_input() throws IOException {
-		logger.info("@When User sends request with existing user_skill_ Id  as input");
+		System.out.println("@When User sends request with existing user_skill_ Id  as input");
 		requestSpecificationDelete();
 	}
 
 	@Then("User should recieve a success status code")
 	public void User_should_recieve_a_success_status_code() throws IOException {
-        logger.info("@Then User should recieve a success status code");
+        System.out.println("@Then User should recieve a success status code");
 		String deleteUserSkillsId = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "UserSkills");
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
 
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
@@ -102,49 +99,49 @@ public class UserSkillMapDeleteStepDef {
 			e.printStackTrace();
 		}
 
-		logger.info("Expected message is: " + expMessage);
-		logger.info("Response Body is =>  " + response.prettyPrint());
+		System.out.println("Expected message is: " + expMessage);
+		System.out.println("Response Body is =>  " + response.prettyPrint());
 		
 
 	}
 
 	@When("User sends request with nonexisting user_skill_ Id  as input")
 	public void user_sends_request_with_nonexisting_user_skill_id_as_input() throws IOException {
-		logger.info("@When User sends request with nonexisting user_skill_ Id  as input");
+		System.out.println("@When User sends request with nonexisting user_skill_ Id  as input");
 		requestSpecificationDelete();
 	}
 
 	@When("User sends request with user_skill_id as blank")
 	public void user_sends_request_with_user_skill_id_as_blank() throws IOException {
-		logger.info("@When User sends request with user_skill_id as blank");
+		System.out.println("@When User sends request with user_skill_id as blank");
 		requestSpecificationDelete();
 	}
 
 	@When("User sends request with user_skill_id as special characters")
 	public void user_sends_request_with_user_skill_id_as_special_characters() throws IOException {
-		logger.info("@When User sends request with  user_skill_id as alphanumeric");
+		System.out.println("@When User sends request with  user_skill_id as alphanumeric");
 		requestSpecificationDelete();
 	}
 
 	@When("User sends request with  user_skill_id as decimal no")
 	public void user_sends_request_with_user_skill_id_as_decimal_no() throws IOException {
-		logger.info("@When User sends request with  user_skill_id as decimal no");
+		System.out.println("@When User sends request with  user_skill_id as decimal no");
 		requestSpecificationDelete();
 	}
 
 	@Then("User should recieve an error status code for UserSkillMap")
 	public void user_should_recieve_an_error_status_code_for_userskillmap() throws IOException {
-		logger.info("@Then User should recieve an error status code for UserSkillMap");
+		System.out.println("@Then User should recieve an error status code for UserSkillMap");
 
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
 
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
-		logger.info("Expected message is: " + expMessage);
-		logger.info("Response Body is =>  " + response.prettyPrint());
+		System.out.println("Expected message is: " + expMessage);
+		System.out.println("Response Body is =>  " + response.prettyPrint());
 
 	}
 

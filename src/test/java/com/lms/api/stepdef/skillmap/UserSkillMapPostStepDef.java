@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
 import com.lms.api.utilities.ExcelReaderUtil;
@@ -41,7 +38,7 @@ public class UserSkillMapPostStepDef {
 	Properties properties;
 	Dbmanager dbmanager;
 	
-	private static final Logger logger = LogManager.getLogger(UserSkillMapPostStepDef.class);
+	
 
 	public UserSkillMapPostStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
@@ -68,13 +65,13 @@ public class UserSkillMapPostStepDef {
 
 		// Validation of requestBody with User schema
 		assertThat(bodyExcel, matchesJsonSchemaInClasspath("userSkillMapPost_schema.json"));
-		logger.info("Validated the schema");
+		System.out.println("Validated the schema");
 		response = RequestSpec.post(path);
 	}
 
 	@Given("User is on Post Method with endpoint with valid JSON schema")
 	public void user_is_on_post_method_with_endpoint_with_valid_json_schema() throws IOException {
-		logger.info("@Given User is on Post Method with endpoint with valid JSON schema");
+		
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
@@ -84,13 +81,13 @@ public class UserSkillMapPostStepDef {
 	
 	@When("User sends request with valid input")
 	public void user_sends_request_with_valid_input() throws IOException {
-		logger.info("@When User sends request with valid input");
+		
 		requestSpecificationPOST();
 	}
 	
 	@Given("User is on Post Method with endpoint url SkillsMap")
 	public void user_is_on_post_method_with_endpoint_url_skillsmap() throws IOException {
-		logger.info("@Given User is on Post Method with endpoint url SkillsMap");
+		
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		RequestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
@@ -101,37 +98,37 @@ public class UserSkillMapPostStepDef {
 
 	@When("User sends request with inputs where skill id is alphanumeric")
 	public void user_sends_request_with_inputs_where_skill_id_is_alphanumeric() throws IOException {
-		logger.info("@When User sends request with inputs where skill id is alphanumeric");
+		
 			requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@Then("User should receive valid status codes")
 	public void user_should_receive_valid_status_codes() throws Exception {
-		logger.info("@Then User should receive valid status codes");
+		
 		thenMethodSpecificationPOST();
 	}
 
 	@When("User sends request with inputs where skill id is null")
 	public void user_sends_request_with_inputs_where_skill_id_is_null() throws IOException {
-		logger.info("@When User sends request with inputs where skill id is null");
+		
 		requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@When("User sends request with inputs where user id is null")
 	public void user_sends_request_with_inputs_where_user_id_is_null() throws IOException {
-		logger.info("@When User sends request with inputs where user id is null");
+		
 		requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@When("User sends request with inputs where month of experience is alphanumeric")
 	public void user_sends_request_with_inputs_where_month_of_experience_is_alphanumeric() throws IOException {
-		logger.info("@When User sends request with inputs where month of experience is alphanumeric");
+		
 		requestSpecificationPOSTWhenExceptionExpected();
 	}
 
 	@When("User sends request with inputs where months of experience as null")
 	public void user_sends_request_with_inputs_where_months_of_experience_as_null() throws IOException {
-		logger.info("@When User sends request with inputs where months of experience as null");
+		
 			requestSpecificationPOSTWhenExceptionExpected();
 	}
 
@@ -142,7 +139,7 @@ public class UserSkillMapPostStepDef {
 		RequestSpec.body(bodyExcel).log().all();
 		// Below assertion is the hard assertion
 		assertThat("Schema Validation Failed",bodyExcel, matchesJsonSchemaInClasspath("userSkillMapPost_schema.json"));
-		logger.info("Validated the schema");
+		System.out.println("Validated the schema");
 		response = RequestSpec.post(path);
 	}
 
@@ -150,9 +147,9 @@ public class UserSkillMapPostStepDef {
 
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		logger.info("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
+		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 		String responseBody = response.prettyPrint();
-		logger.info("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Status code is =>  " + response.statusCode());
 		
 		//Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
@@ -173,19 +170,19 @@ public class UserSkillMapPostStepDef {
 		// DB validation for a post request for a newly created user_id
 		assertEquals(newUserSkill, dbUserSkillId);
 		
-		logger.info("Response Body is =>  " + responseBody);
+		System.out.println("Response Body is =>  " + responseBody);
 	}
 	
 	@Then("User should receive error status code")
 	public void user_should_receive_error_status_code() throws Exception {
-		logger.info("@Then User should receive error status code");
+		
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String expMessage = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Message");
-		logger.info("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
+		System.out.println("Expected response code: " + expStatusCode + "Expected message is: " + expMessage);
 		
 		//Status code validation
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
-		logger.info("Response Status code is =>  " + response.statusCode());
-		logger.info("Response Body is =>  " + response.prettyPrint());
+		System.out.println("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Body is =>  " + response.prettyPrint());
 	}
 }

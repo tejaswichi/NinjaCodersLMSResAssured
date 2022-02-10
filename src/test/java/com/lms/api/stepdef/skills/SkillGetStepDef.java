@@ -9,8 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.lms.api.dbmanager.Dbmanager;
@@ -38,8 +36,7 @@ public class SkillGetStepDef {
 
 	Properties properties;
 	Dbmanager dbmanager;
-	private static final Logger logger = LogManager.getLogger(SkillGetStepDef.class);
-		
+	
 	public SkillGetStepDef() {
 		PropertiesReaderUtil propUtil = new PropertiesReaderUtil();
 		properties = propUtil.loadProperties();
@@ -62,61 +59,61 @@ public class SkillGetStepDef {
 
 	@Given("User is on GET method with endpoint Skills")
 	public void user_is_on_get_method_with_endpoint_skills() {
-		logger.info("@Given User is on GET method with endpoint Skills");
+		
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		path = properties.getProperty("skills.endpoint.getAll");
-		logger.info("Path for GetAll is " + path);
+		System.out.println("Path for GetAll is " + path);
 	}
 
 	@When("User sends request from Skill API")
 	public void user_sends_request() {
-		logger.info("@When User sends request from Skill API");
+		
 		requestSpecificationGet();
 	}
 
 	@Then("User receives list of all Skills with Json Schema Validation")
 	public void user_receives_list_of_all_skills_with_json_schema_validation() throws IOException {
-		logger.info("@Then User receives list of all Skills with Json Schema Validation");
+		
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.asPrettyString();
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
-		logger.info("Response Body is =>  " + responseBody);
+		System.out.println("Response Body is =>  " + responseBody);
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		assertThat(responseBody, matchesJsonSchemaInClasspath("skillGetAll_schema.json"));
-		logger.info("Response Status code is =>  " + response.statusCode());
+		System.out.println("Response Status code is =>  " + response.statusCode());
 		
 	}
 
 	@Given("User is on GET method with endpoint Skills with Skill_id")
 	public void user_is_on_get_method_with_endpoint_url_skills_with_skill_id() throws IOException {
-		logger.info("@Given User is on GET method with endpoint Skills with Skill_id");
+		
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
-		logger.info("SkillId is : " + skill_id);
+		System.out.println("SkillId is : " + skill_id);
 		path = properties.getProperty("skills.endpoint") + skill_id;
-		logger.info("Path for Get is " + path);
+		System.out.println("Path for Get is " + path);
 	}
 
 	@When("User sends the request with specific Skill_Id")
 	public void user_sends_the_request_with_specific_skill_id() {
-		logger.info("@When User sends the request with specific Skill_Id");
+		System.out.println("@When User sends the request with specific Skill_Id");
 		requestSpecificationGet();
 		
 	}
 
 	@Then("User receives the particular Skill_Id details")
 	public void user_receives_the_particular_skill_Id_details() throws IOException, SQLException {
-		logger.info("@Then User receives the particular Skill_Id details");
+		
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.asPrettyString();
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
-		logger.info("Response Body is =>  " + responseBody);
+		System.out.println("Response Body is =>  " + responseBody);
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
 
@@ -125,7 +122,7 @@ public class SkillGetStepDef {
 		// Retrieve a particular user record from tbl_lms_skillmaster
 		ArrayList<String> dbValidList = dbmanager.dbvalidationSkill(rsSkill_id);
 		String dbskill_Id = dbValidList.get(0);
-		logger.info("Skilld id from db :  " +dbskill_Id);
+		System.out.println("Skilld id from db :  " +dbskill_Id);
 		// DB validation for a get request for an existing skill_id
 		assertEquals(skill_id, dbskill_Id);
 		ExtentCucumberAdapter.addTestStepLog("Get specific skill " +dbskill_Id+ " record from DB : " + dbValidList.toString());
@@ -134,43 +131,43 @@ public class SkillGetStepDef {
 
 	@When("User sends the request with invalid Skill Id")
 	public void user_sends_the_request_with_invalid_skill_id() {
-		logger.info("@When User sends the request with invalid Skill Id");
+		
 		requestSpecificationGet();
 	}
 
 	@When("User sends the request with alphanumeric Skill Id")
 	public void user_sends_the_request_with_alphanumeric_skill_id() {
-		logger.info("@When User sends the request with alphanumeric Skill Id");
+		
 		requestSpecificationGet();
 	}
 
 	@Given("User is on GET method with endpoint Skills and Skill id null")
 	public void user_is_on_GET_method_with_endpoint_skills_and_skill_id_null() throws IOException {
-		logger.info("@Given User is on GET method with endpoint Skills and Skill id null");
+		
 		RestAssured.baseURI = properties.getProperty("base_uri");
 		requestSpec = RestAssured.given().auth().preemptive().basic(properties.getProperty("username"),
 				properties.getProperty("password"));
 
 		String skill_id = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "Skill_id");
-		logger.info("SkillId is : " + skill_id);
+		System.out.println("SkillId is : " + skill_id);
 		path = properties.getProperty("skills.endpoint") + skill_id;
-		logger.info("Path for Get is " + path);
+		System.out.println("Path for Get is " + path);
 	}
 
 	@When("User sends the request with skill id as null")
 	public void user_sends_the_request_with_skill_id_as_null() {
-		logger.info("@When User sends the request with skill id as null");
+		
 		requestSpecificationGet();
 	}
 
 	@Then("User doesnot get the particular Skill_Id")
 	public void user_doesnot_get_the_particular_skill_id() throws IOException {
-		logger.info("@Then User doesnot get the particular Skill_Id");
+	
 		String expStatusCode = excelSheetReaderUtil.getDataFromExcel(scenario.getName(), "StatusCode");
 		String responseBody = response.asPrettyString();
-		logger.info("Actual Response Status code=>  " + response.statusCode()
+		System.out.println("Actual Response Status code=>  " + response.statusCode()
 				+ "  Expected Response Status code=>  " + expStatusCode);
-		logger.info("Response Body is =>  " + responseBody);
+		System.out.println("Response Body is =>  " + responseBody);
 		assertEquals(Integer.parseInt(expStatusCode), response.statusCode());
 
 	}
